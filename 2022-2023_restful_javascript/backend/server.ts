@@ -1,7 +1,9 @@
 import express, { Express, Request, Response, Application } from "express";
 import dotenv from "dotenv";
+const connection = require("../backend/src/database/squalizer");
 
-//For env File
+const init = require("../backend/src/models/User");
+
 dotenv.config();
 
 const app: Application = express();
