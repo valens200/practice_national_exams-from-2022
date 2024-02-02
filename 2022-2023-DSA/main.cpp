@@ -78,7 +78,7 @@ void addItem()
 
     ofstream myfile;
     myfile.open("list.txt", ios::app);
-    myfile << "\nItem ID:" << item.item_id << " Item Name:" << item.item_name << " Quantity :" << item.item_quantity << " Reg Date :" << item.item_registration_date;
+    myfile << "\nItem ID:" < < < < item.item_id << setw(40) << " Item Name:" << item.item_name << setw(40) << " Quantity :" << item.item_quantity << setw(40) << " Reg Date :" << item.item_registration_date;
     myfile.close();
 }
 
