@@ -2,12 +2,13 @@ const { DataTypes, Model } = require("sequelize");
 const connection = require("../database/squalizer");
 const squalize = require("../database/squalizer");
 
-class User extends Model {
+export class User extends Model {
   private id!: number;
   private email!: string;
   private password!: string;
 }
 
+// User.hasMany(Role, { as: "roles" });
 User.init(
   {
     id: {
