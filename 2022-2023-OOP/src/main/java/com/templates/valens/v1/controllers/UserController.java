@@ -1,4 +1,5 @@
 package com.templates.valens.v1.controllers;
+import com.templates.valens.v1.dtos.requests.CreateAdminDTO;
 import com.templates.valens.v1.dtos.requests.CreateUserDTO;
 import com.templates.valens.v1.payload.ApiResponse;
 import com.templates.valens.v1.services.IUserService;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<ApiResponse> createAdmin(@RequestBody() CreateUserDTO dto) {
+    public ResponseEntity<ApiResponse> createAdmin(@RequestBody() CreateAdminDTO dto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true,"The user created successfully", this.userService.createAdmin(dto)));
         }catch (Exception exception){
