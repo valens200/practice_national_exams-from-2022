@@ -1,5 +1,6 @@
 package com.templates.valens.v1.services.ServiceImpl;
 
+import com.templates.valens.v1.dtos.requests.CreateAdminDTO;
 import com.templates.valens.v1.dtos.requests.CreateUserDTO;
 import com.templates.valens.v1.exceptions.BadRequestException;
 import com.templates.valens.v1.exceptions.NotFoundException;
@@ -27,7 +28,7 @@ public class UserServiceImpl extends ServiceImpl implements IUserService {
     @Value("${app.admin.key}")
     private String adminKey;
     @Override
-    public User createAdmin(CreateUserDTO dto) {
+    public User createAdmin(CreateAdminDTO dto) {
         try {
             if(!adminKey.equals(dto.getAdminKey())) throw new BadRequestException("You are not authorized to create an admin");
             if(dto.getPassword().equals("") || dto.getEmail().equals("")) throw new BadRequestException("The email and password inputs are required");
