@@ -1,12 +1,13 @@
 package com.templates.valens.v1.models;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,10 @@ public class Quantity {
     private String operation;
 
     private Date date;
+
+    @ManyToMany(mappedBy = "quantities", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private  List<Cart> cats;
 
 
     public Quantity(Product product, double quantity, String operation, Date date) {

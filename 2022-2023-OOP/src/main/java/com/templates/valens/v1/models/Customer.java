@@ -14,5 +14,5 @@ public class Customer extends  Member{
 
     @OneToOne
     @JoinColumn(name = "cat_id")
-    private Cat cat;
+    private Cart cat;
 }
