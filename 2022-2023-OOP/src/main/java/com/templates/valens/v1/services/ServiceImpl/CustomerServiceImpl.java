@@ -1,24 +1,25 @@
 package com.templates.valens.v1.services.ServiceImpl;
-
 import com.templates.valens.v1.dtos.requests.CreateCustomerDTO;
 import com.templates.valens.v1.exceptions.ForbiddenException;
+import com.templates.valens.v1.exceptions.NotFoundException;
+import com.templates.valens.v1.models.Cart;
 import com.templates.valens.v1.models.Customer;
-import com.templates.valens.v1.models.Role;
 import com.templates.valens.v1.models.User;
 import com.templates.valens.v1.models.enums.ERole;
+import com.templates.valens.v1.repositories.ICatRepository;
 import com.templates.valens.v1.repositories.ICustomerRepository;
 import com.templates.valens.v1.repositories.IUserRepository;
 import com.templates.valens.v1.services.ICustomerService;
 import com.templates.valens.v1.services.IRoleService;
+import com.templates.valens.v1.services.IUserService;
 import com.templates.valens.v1.utils.ExceptionsUtils;
 import com.templates.valens.v1.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -27,7 +28,10 @@ public class CustomerServiceImpl extends ServiceImpl implements ICustomerService
     private  final ICustomerRepository customerRepository;
     private final IUserRepository userRepository;
     private final IRoleService roleService;
+    private final IUserService userService;
+    private final ICatRepository catRepository;
 
+    @Override
    public Customer create(CreateCustomerDTO dto){
        try {
            if(customerRepository.existsByEmail(dto.getEmail())) throw new ForbiddenException("The employee is already registered");
@@ -46,6 +50,11 @@ public class CustomerServiceImpl extends ServiceImpl implements ICustomerService
            customer.setFirstName(dto.getFirstName());
            customer.setLastName(dto.getLastName());
            customer.setProfile(user);
+           customer = customerRepository.save(customer);
+           cat = new Cart();
+           cat.setCustomer(customer);
+           cat = catRepository.save(cat);
+           customer.setCat(cat);
            return customerRepository.save(customer);
        }catch (Exception exception){
            ExceptionsUtils.handleServiceExceptions(exception);
@@ -53,27 +62,40 @@ public class CustomerServiceImpl extends ServiceImpl implements ICustomerService
        }
 
    }
+    @Override
    public Customer update(UUID customerId, CreateCustomerDTO dto){
        try {
-           return null;
+           customer = this.getById(customerId);
+           user = userRepository.findUserByEmail(dto.getEmail()).orElseThrow(()->new NotFoundException("The user with the provided email is not fund"));
+           user.setEmail(dto.getEmail());
+           user.setPassword(SecurityUtils.HashString(dto.getPassword()));
+           user = this.userRepository.save(user);
+           customer.setPhone(dto.getPhoneNumber());
+           customer.setLastName(dto.getLastName());
+           customer.setFirstName(dto.getFirstName());
+           customer.setProfile(user);
+           return this.customerRepository.save(customer);
        }catch (Exception exception){
            ExceptionsUtils.handleServiceExceptions(exception);
            return null;
        }
    }
 
+    @Override
    public List<Customer> getAll(){
        try {
-           return null;
+           return customerRepository.findAll();
        }catch (Exception exception){
            ExceptionsUtils.handleServiceExceptions(exception);
            return null;
        }
 
    }
-    public Page<Customer> getAllPaginated(){
+
+    @Override
+    public Page<Customer> getAllPaginated(Pageable pageable){
         try {
-            return null;
+            return customerRepository.findAll(pageable);
         }catch (Exception exception){
             ExceptionsUtils.handleServiceExceptions(exception);
             return null;
@@ -81,14 +103,14 @@ public class CustomerServiceImpl extends ServiceImpl implements ICustomerService
 
     }
 
-   public Customer getById(UUID  customerId){
+    @Override
+   public Customer getById(UUID customerId){
        try {
-           return null;
+           return this.customerRepository.findById(customerId).orElseThrow(()->new NotFoundException("The customer with the provided id is not found"));
        }catch (Exception exception){
            ExceptionsUtils.handleServiceExceptions(exception);
            return null;
        }
-
    }
 
 }

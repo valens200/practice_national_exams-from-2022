@@ -18,6 +18,7 @@ public class ServiceImpl {
     public Product product;
     public Quantity quantity;
     public Customer customer;
+    public Cart cat;
     public LoginResponseDTO loginResponseDTO;
     public Optional<Role> roleOptional;
 
